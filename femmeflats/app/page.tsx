@@ -2,15 +2,27 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const profiles = [
-  { id: 1, name: "Ananya S.", age: 24, photo: "https://randomuser.me/api/portraits/women/44.jpg", location: "Koramangala, Bengaluru", rent: "₹12,000 / mo", activeStatus: "Active today", activeDot: "#4CAF50", preferences: ["Non-smoker", "Veg only", "Early riser", "WFH", "No pets"], lookingFor: "1BHK share", verified: true },
-  { id: 2, name: "Priya M.", age: 27, photo: "https://randomuser.me/api/portraits/women/68.jpg", location: "Baner, Pune", rent: "₹9,500 / mo", activeStatus: "Active yesterday", activeDot: "#FFC107", preferences: ["Occ. smoker ok", "Any diet", "Night owl", "Office goer", "Cat ok"], lookingFor: "2BHK share", verified: true },
-  { id: 3, name: "Riya K.", age: 22, photo: "https://randomuser.me/api/portraits/women/90.jpg", location: "Malviya Nagar, Delhi", rent: "₹8,000 / mo", activeStatus: "Active 3 days ago", activeDot: "#9E9E9E", preferences: ["Non-smoker", "Veg preferred", "Flexible timing", "Student", "No pets"], lookingFor: "PG / room share", verified: false },
-  { id: 4, name: "Meera T.", age: 29, photo: "https://randomuser.me/api/portraits/women/31.jpg", location: "Juhu, Mumbai", rent: "₹18,000 / mo", activeStatus: "Active today", activeDot: "#4CAF50", preferences: ["Non-smoker", "Any diet", "Early riser", "Freelancer", "Dog lover"], lookingFor: "2BHK share", verified: true },
+type Profile = {
+  id: number; match: number; name: string; age: number; photo: string;
+  location: string; rent: string; activeStatus: string; activeDot: string;
+  preferences: string[]; lookingFor: string; verified: boolean;
+};
+
+const profiles: Profile[] = [
+  { id: 1, match: 92, name: "Ananya S.", age: 24, photo: "https://randomuser.me/api/portraits/women/44.jpg", location: "Koramangala, Bengaluru", rent: "₹12,000 / mo", activeStatus: "Active today", activeDot: "#4CAF50", preferences: ["Non-smoker", "Veg only", "Early riser", "WFH", "No pets"], lookingFor: "1BHK share", verified: true },
+  { id: 2, match: 87, name: "Priya M.", age: 27, photo: "https://randomuser.me/api/portraits/women/68.jpg", location: "Baner, Pune", rent: "₹9,500 / mo", activeStatus: "Active yesterday", activeDot: "#FFC107", preferences: ["Occ. smoker ok", "Any diet", "Night owl", "Office goer", "Cat ok"], lookingFor: "2BHK share", verified: true },
+  { id: 3, match: 74, name: "Riya K.", age: 22, photo: "https://randomuser.me/api/portraits/women/90.jpg", location: "Malviya Nagar, Delhi", rent: "₹8,000 / mo", activeStatus: "Active 3 days ago", activeDot: "#9E9E9E", preferences: ["Non-smoker", "Veg preferred", "Flexible timing", "Student", "No pets"], lookingFor: "PG / room share", verified: false },
+  { id: 4, match: 95, name: "Meera T.", age: 29, photo: "https://randomuser.me/api/portraits/women/31.jpg", location: "Juhu, Mumbai", rent: "₹18,000 / mo", activeStatus: "Active today", activeDot: "#4CAF50", preferences: ["Non-smoker", "Any diet", "Early riser", "Freelancer", "Dog lover"], lookingFor: "2BHK share", verified: true },
 ];
 
 const navLinks = ["Discover", "How it works", "Safety", "Stories"];
 const locationChips = ["Mumbai", "Delhi", "Bengaluru", "Pune"];
+
+const stories = [
+  { name: "Tanvi & Shruti", text: "Found each other in three days. We both wanted a quiet home with no parties — literally the same answer for everything." },
+  { name: "Aisha R.", text: "The preference filters saved me from a bad match. Ended up with a flatmate who actually does the dishes." },
+  { name: "Neha & Pooja", text: "Moved from different cities to Bengaluru. We felt like we already knew each other before we met." },
+];
 
 function FloatingCard({ photo, name, age, location, preferences, delay, style }: {
   photo: string; name: string; age: number; location: string;
@@ -45,18 +57,137 @@ function FloatingCard({ photo, name, age, location, preferences, delay, style }:
   );
 }
 
-function MatchNotif({ delay }: { delay: number }) {
+function MatchRing({ pct, size = 46 }: { pct: number; size?: number }) {
+  const inner = size - 8;
   return (
     <div style={{
-      position: "absolute", right: "6%", top: "18%",
-      background: "rgba(107,127,107,0.95)", borderRadius: "14px",
-      padding: "10px 14px", display: "flex", alignItems: "center", gap: "8px",
-      animation: `floatCard 5s ease-in-out ${delay}s infinite`,
-      boxShadow: "0 4px 20px rgba(107,127,107,0.25)",
-      zIndex: 10,
+      width: size, height: size, borderRadius: "50%", flexShrink: 0,
+      background: `conic-gradient(var(--sage-deep) ${pct * 3.6}deg, rgba(168,184,168,0.3) 0deg)`,
+      display: "flex", alignItems: "center", justifyContent: "center",
     }}>
-      <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#A8EDB0", flexShrink: 0 }} />
-      <span style={{ fontSize: "11px", fontWeight: 600, color: "#F8F6F0", whiteSpace: "nowrap" }}>New match found!</span>
+      <div style={{
+        width: inner, height: inner, borderRadius: "50%", background: "#fff",
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1,
+      }}>
+        <span className="font-display" style={{ fontSize: "13px", fontWeight: 700, color: "var(--sage-dark)" }}>{pct}</span>
+        <span style={{ fontSize: "6px", letterSpacing: "0.4px", textTransform: "uppercase", color: "var(--sage-mid)", marginTop: "1px" }}>match</span>
+      </div>
+    </div>
+  );
+}
+
+/* Tall profile card. Avatar-led rather than full-bleed: the mock portraits are
+   only 128px square, so a full-bleed photo upscales into mush. A large circle
+   renders them close to native resolution — crisp, and softer for this palette. */
+function ProfileCardTall({ p }: { p: Profile }) {
+  return (
+    <div style={{
+      width: "322px", height: "440px", borderRadius: "28px",
+      background: "#fff", border: "1px solid rgba(168,184,168,0.45)",
+      boxShadow: "0 20px 48px rgba(45,58,45,0.15)",
+      padding: "22px", display: "flex", flexDirection: "column",
+      position: "relative", overflow: "hidden",
+    }}>
+      <div style={{
+        position: "absolute", top: "-84px", left: "50%", transform: "translateX(-50%)",
+        width: "360px", height: "230px", borderRadius: "50%",
+        background: "var(--sage)", opacity: 0.8,
+      }} />
+
+      <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 3 }}>
+        <MatchRing pct={p.match} size={54} />
+      </div>
+
+      <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: "14px", flex: 1 }}>
+        <div style={{ position: "relative", marginTop: "20px" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={p.photo} alt="" style={{
+            width: "124px", height: "124px", borderRadius: "50%", objectFit: "cover",
+            border: "3.5px solid #fff", boxShadow: "0 6px 20px rgba(45,58,45,0.16)",
+          }} />
+          {p.verified && (
+            <span style={{
+              position: "absolute", bottom: "5px", right: "5px",
+              background: "var(--sage-deep)", borderRadius: "50%", width: "28px", height: "28px",
+              display: "flex", alignItems: "center", justifyContent: "center", border: "3px solid #fff",
+            }}>
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={3.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </span>
+          )}
+        </div>
+
+        <div style={{ textAlign: "center" }}>
+          <div className="font-display" style={{ fontSize: "24px", fontWeight: 700, color: "var(--sage-dark)", letterSpacing: "-0.4px" }}>
+            {p.name}, {p.age}
+          </div>
+          <div style={{ fontSize: "13px", color: "var(--sage-mid)", marginTop: "4px" }}>{p.location}</div>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", justifyContent: "center" }}>
+          {p.preferences.slice(0, 4).map((pref) => (
+            <span key={pref} className="preference-tag" style={{ fontSize: "11px", padding: "4px 10px" }}>{pref}</span>
+          ))}
+        </div>
+
+        <div style={{ marginTop: "auto", width: "100%", paddingTop: "16px", borderTop: "1px solid rgba(168,184,168,0.3)", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+            <span style={{ fontSize: "18px", fontWeight: 600, color: "var(--sage-dark)" }}>{p.rent}</span>
+            <span style={{ fontSize: "11px", color: "var(--sage-mid)" }}>{p.lookingFor}</span>
+          </div>
+          <span style={{ fontSize: "11px", color: "var(--sage-mid)", display: "flex", alignItems: "center", gap: "5px" }}>
+            <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: p.activeDot, display: "inline-block" }} />
+            {p.activeStatus}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* Deck with its own timer. Each cycle the front card swipes off to the left and
+   reappears at the back of the fan; everyone else shifts forward one slot. */
+const DECK_SLOTS = [
+  { rotate: 0,  x: 0,  y: 0,   scale: 1,    z: 40, opacity: 1 },
+  { rotate: 4,  x: 32, y: -15, scale: 0.96, z: 30, opacity: 0.97 },
+  { rotate: 8,  x: 64, y: -30, scale: 0.92, z: 20, opacity: 0.94 },
+  { rotate: 12, x: 96, y: -45, scale: 0.88, z: 10, opacity: 0.9 },
+];
+
+function ProfileDeck() {
+  const n = profiles.length;
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setStep((v) => v + 1), 3200);
+    return () => clearInterval(t);
+  }, []);
+
+  const leaving = step === 0 ? -1 : (step - 1 + n) % n;
+
+  return (
+    <div style={{ position: "relative", width: "466px", height: "500px", flexShrink: 0 }}>
+      {profiles.map((profile, i) => {
+        const slot = DECK_SLOTS[(i - (step % n) + n) % n];
+        const isLeaving = i === leaving;
+        return (
+          <div
+            key={profile.id}
+            style={{
+              position: "absolute", left: 0, bottom: 0,
+              transformOrigin: "center center",
+              transform: `translate(${slot.x}px, ${slot.y}px) rotate(${slot.rotate}deg) scale(${slot.scale})`,
+              zIndex: slot.z,
+              opacity: slot.opacity,
+              transition: isLeaving ? "none" : "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 1s ease",
+              animation: isLeaving ? "swipeToBack 1s cubic-bezier(0.4,0,0.2,1) both" : undefined,
+            }}
+          >
+            <ProfileCardTall p={profile} />
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -112,14 +243,15 @@ export default function Home() {
         </nav>
 
         <div style={{
-          flex: 1,
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          alignItems: "center",
-          justifyItems: "center",
-          padding: "0 24px",
-          overflow: "hidden",
+          flex: 1, display: "flex", flexDirection: "column",
+          padding: "0 24px", overflow: "hidden", minHeight: 0,
         }}>
+
+          <div style={{
+            flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr",
+            alignItems: "center", justifyItems: "center",
+            minHeight: 0, width: "100%",
+          }}>
 
           {/* ── LEFT HALF ── */}
           <div style={{
@@ -149,67 +281,40 @@ export default function Home() {
               life.
             </h1>
 
-            <p style={{ fontSize: "14px", color: "var(--sage-deep)", lineHeight: 1.65, maxWidth: "360px", margin: "0 0 28px 0" }}>
+            <p style={{ fontSize: "14px", color: "var(--sage-deep)", lineHeight: 1.65, maxWidth: "360px", margin: "0 0 24px 0" }}>
               Matched by lifestyle, habits, and deal-breakers — not just who&apos;s available.
             </p>
 
-            {/* ── BIG SEARCH BAR (Velvet & Ember inspired) ── */}
-            <div style={{
-              background: "var(--ivory)",
-              border: "2px solid rgba(168,184,168,0.5)",
-              borderRadius: "16px",
-              padding: "6px 6px 6px 18px",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              width: "100%",
-              maxWidth: "420px",
-              boxShadow: "0 4px 24px rgba(45,58,45,0.08)",
-              transition: "border-color 0.2s, box-shadow 0.2s",
-            }}
-              onFocus={() => {}}
-              onBlur={() => {}}
-            >
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="var(--sage-mid)" strokeWidth={2} style={{ flexShrink: 0 }}>
-                <circle cx="11" cy="11" r="8" /><path strokeLinecap="round" d="M21 21l-4.35-4.35" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Where do you want to live?"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                style={{
-                  border: "none", outline: "none", background: "transparent",
-                  fontFamily: "Inter, sans-serif", fontSize: "14px",
-                  color: "var(--sage-dark)", width: "100%",
-                  padding: "10px 0",
-                }}
-              />
-              <button className="btn-primary" style={{ padding: "11px 22px", fontSize: "13px", flexShrink: 0, borderRadius: "12px" }}>
-                Search
-              </button>
+            {/* ── SOCIAL PROOF: overlapping avatars + stat ── */}
+            <div style={{ display: "flex", alignItems: "center", gap: "13px" }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {[44, 68, 90].map((n, i) => (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    key={n}
+                    src={`https://randomuser.me/api/portraits/women/${n}.jpg`}
+                    alt=""
+                    style={{
+                      width: "38px", height: "38px", borderRadius: "50%", objectFit: "cover",
+                      border: "2.5px solid var(--sage)",
+                      marginLeft: i === 0 ? 0 : "-15px",
+                      position: "relative", zIndex: 3 - i,
+                    }}
+                  />
+                ))}
+              </div>
+              <span style={{ fontSize: "13px", color: "var(--sage-deep)", lineHeight: 1.4 }}>
+                <strong style={{ fontWeight: 600, color: "var(--sage-dark)" }}>500+</strong> women already searching
+              </span>
             </div>
 
-            {/* ── LOCATION CHIPS ── */}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "12px", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "11px", color: "var(--sage-mid)", fontWeight: 500, whiteSpace: "nowrap" }}>Quick search:</span>
-              {locationChips.map((city) => (
-                <button
-                  key={city}
-                  className="chip-btn"
-                  onClick={() => setSearchValue(city)}
-                >
-                  {city}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* ── RIGHT HALF: Animation — 50% bigger ── */}
           <div style={{
             position: "relative",
             width: "100%",
-            height: "calc(100dvh - 65px)",
+            height: "100%", minHeight: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -259,82 +364,154 @@ export default function Home() {
               style={{ right: "4%", bottom: "18%" }}
             />
 
-            {/* Match notif */}
-            <MatchNotif delay={0.8} />
           </div>
-        </div>
-      </section>
+          </div>
 
-      {/* ── SECTION 2: PROFILES + STORIES ── */}
-      <section className="snap-section" style={{ background: "var(--ivory)", display: "flex", flexDirection: "column" }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "32px 32px 0", gap: "20px", overflow: "hidden" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexShrink: 0 }}>
-            <div>
-              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--sage-mid)" }}>Who you&apos;ll find</span>
-              <h2 className="font-display" style={{ fontSize: "22px", fontWeight: 600, color: "var(--sage-dark)", marginTop: "4px" }}>Real people, real preferences</h2>
+          {/* ── CENTRED SEARCH ── */}
+          <div style={{
+            flexShrink: 0, width: "100%",
+            display: "flex", flexDirection: "column", alignItems: "center",
+            gap: "14px", paddingBottom: "clamp(28px, 7vh, 72px)",
+          }}>
+            <div style={{
+              background: "var(--ivory)",
+              border: "2px solid rgba(168,184,168,0.5)",
+              borderRadius: "16px",
+              padding: "6px 6px 6px 18px",
+              display: "flex", alignItems: "center", gap: "10px",
+              width: "100%", maxWidth: "460px",
+              boxShadow: "0 4px 24px rgba(45,58,45,0.08)",
+            }}>
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="var(--sage-mid)" strokeWidth={2} style={{ flexShrink: 0 }}>
+                <circle cx="11" cy="11" r="8" /><path strokeLinecap="round" d="M21 21l-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Where do you want to live?"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                style={{
+                  border: "none", outline: "none", background: "transparent",
+                  fontFamily: "Inter, sans-serif", fontSize: "14px",
+                  color: "var(--sage-dark)", width: "100%", padding: "10px 0",
+                }}
+              />
+              <button className="btn-primary" style={{ padding: "11px 22px", fontSize: "13px", flexShrink: 0, borderRadius: "12px" }}>
+                Search
+              </button>
             </div>
-            <Link href="/browse" style={{ fontSize: "12px", color: "var(--sage-deep)", fontWeight: 500, textDecoration: "none" }}>Browse all →</Link>
-          </div>
-          <div className="cards-row" style={{ flexShrink: 0 }}>
-            {profiles.map((p) => (
-              <Link href="/signup" key={p.id} style={{ textDecoration: "none" }}>
-                <div className="profile-card">
-                  <div style={{ padding: "14px 14px 10px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <div style={{ position: "relative", flexShrink: 0 }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={p.photo} alt={p.name} width={44} height={44} style={{ width: "44px", height: "44px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--sage)" }} />
-                        {p.verified && (
-                          <span style={{ position: "absolute", bottom: -1, right: -1, background: "var(--sage-deep)", borderRadius: "50%", width: "14px", height: "14px", display: "flex", alignItems: "center", justifyContent: "center", border: "1.5px solid var(--ivory)" }}>
-                            <svg width="8" height="8" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                          </span>
-                        )}
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--sage-dark)" }}>{p.name}, {p.age}</div>
-                        <div style={{ fontSize: "10px", color: "var(--sage-mid)", marginTop: "1px" }}>{p.location}</div>
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "10px" }}>
-                      <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: p.activeDot, display: "inline-block", flexShrink: 0 }} />
-                      <span style={{ fontSize: "10px", color: "var(--sage-mid)" }}>{p.activeStatus}</span>
-                    </div>
-                  </div>
-                  <div style={{ height: "1px", background: "rgba(168,184,168,0.2)", margin: "0 14px" }} />
-                  <div style={{ padding: "10px 14px 14px" }}>
-                    <div style={{ fontSize: "10px", color: "var(--sage-mid)", marginBottom: "7px", fontWeight: 500 }}>Lifestyle</div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-                      {p.preferences.slice(0, 4).map((pref) => <span key={pref} className="preference-tag">{pref}</span>)}
-                      {p.preferences.length > 4 && <span className="preference-tag" style={{ background: "var(--sage-mid)", color: "white" }}>+{p.preferences.length - 4}</span>}
-                    </div>
-                    <div style={{ marginTop: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--sage-dark)" }}>{p.rent}</span>
-                      <span style={{ fontSize: "10px", color: "var(--sage-mid)" }}>{p.lookingFor}</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div style={{ flexShrink: 0 }}>
-            <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--sage-mid)", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "10px" }}>Stories</div>
-            <div className="cards-row">
-              {[
-                { name: "Tanvi & Shruti", text: "Found each other in 3 days. We both wanted a quiet home with no parties — literally the same answer for everything.", stars: 5 },
-                { name: "Aisha R.", text: "The preference filters saved me from a bad match. Ended up with a flatmate who actually does dishes.", stars: 5 },
-                { name: "Neha & Pooja", text: "Moved from different cities to Bengaluru. FemmeFlats made us feel like we already knew each other before we met.", stars: 5 },
-              ].map((s) => (
-                <div key={s.name} className="story-card">
-                  <div style={{ display: "flex", gap: "2px", marginBottom: "8px" }}>{[...Array(s.stars)].map((_, i) => <span key={i} style={{ color: "var(--sand)", fontSize: "11px" }}>★</span>)}</div>
-                  <p style={{ fontSize: "12px", color: "var(--sage-deep)", lineHeight: 1.6 }}>&ldquo;{s.text}&rdquo;</p>
-                  <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--sage-mid)", marginTop: "8px" }}>— {s.name}</div>
-                </div>
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "11px", color: "var(--sage-mid)", fontWeight: 500, whiteSpace: "nowrap" }}>Quick search:</span>
+              {locationChips.map((city) => (
+                <button key={city} className="chip-btn" onClick={() => setSearchValue(city)}>{city}</button>
               ))}
             </div>
           </div>
         </div>
-        <footer style={{ padding: "14px 32px", borderTop: "1px solid rgba(168,184,168,0.2)", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-          <span className="font-display" style={{ fontSize: "13px", color: "var(--sage-mid)", fontWeight: 600 }}>© 2025 FemmeFlats</span>
+      </section>
+
+      {/* ── SECTION 2: WHO YOU'LL FIND ── */}
+      <section id="screen-2" className="snap-section" style={{ background: "var(--ivory)", display: "flex", flexDirection: "column" }}>
+
+        <div style={{
+          flex: 1, minHeight: 0, overflow: "hidden",
+          display: "grid", gridTemplateColumns: "1fr 1fr",
+          gap: "clamp(32px, 6vw, 96px)", alignItems: "center",
+          padding: "clamp(20px, 3vh, 40px) clamp(24px, 4vw, 64px) 0",
+        }}>
+
+          {/* ── LEFT: rotating fanned deck ── */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: 0, height: "100%" }}>
+            <ProfileDeck />
+          </div>
+
+          {/* ── LEFT: how it works + safety, kept short ── */}
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "34px", maxWidth: "400px", justifySelf: "center", height: "100%" }}>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.6px", textTransform: "uppercase", color: "var(--sage-mid)" }}>
+                How it works
+              </span>
+              <div style={{ display: "flex", flexDirection: "column", gap: "13px" }}>
+                {[
+                  ["Answer", "Twelve questions. Ninety seconds."],
+                  ["Match", "Ranked by how much you overlap."],
+                  ["Meet", "You choose who is worth a chat."],
+                ].map(([title, line], i) => (
+                  <div key={title} style={{ display: "flex", gap: "13px", alignItems: "baseline" }}>
+                    <span className="font-display" style={{
+                      fontSize: "13px", fontWeight: 700, color: "var(--sage-mid)",
+                      width: "16px", flexShrink: 0,
+                    }}>{i + 1}</span>
+                    <div>
+                      <span className="font-display" style={{ fontSize: "21px", fontWeight: 700, color: "var(--sage-dark)", letterSpacing: "-0.3px" }}>{title}</span>
+                      <span style={{ fontSize: "13px", color: "var(--sage-deep)", marginLeft: "10px" }}>{line}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ height: "1px", background: "rgba(168,184,168,0.4)" }} />
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.6px", textTransform: "uppercase", color: "var(--sage-mid)" }}>
+                Safety
+              </span>
+              <div style={{ display: "flex", flexDirection: "column", gap: "11px" }}>
+                {[
+                  "Women only.",
+                  "Every profile verified by selfie.",
+                  "Nobody messages you uninvited.",
+                  "Block or report in one tap.",
+                ].map((line) => (
+                  <div key={line} style={{ display: "flex", gap: "11px", alignItems: "center" }}>
+                    <span style={{
+                      width: "17px", height: "17px", borderRadius: "50%", flexShrink: 0,
+                      background: "var(--sage)", display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="var(--sage-deep)" strokeWidth={3.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <span style={{ fontSize: "14px", color: "var(--sage-dark)" }}>{line}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <Link href="/browse" className="btn-primary">Browse profiles →</Link>
+              <Link href="/signup" className="btn-ghost">Create a profile</Link>
+            </div>
+          </div>
+
+        </div>
+
+        {/* ── STORY STRIP: one quote, rotating ── */}
+        <div style={{
+          flexShrink: 0, borderTop: "1px solid rgba(168,184,168,0.28)",
+          margin: "0 clamp(24px, 4vw, 56px)", padding: "18px 0",
+          display: "flex", alignItems: "center", gap: "16px", minHeight: "62px",
+        }}>
+          <div style={{ display: "flex", gap: "2px", flexShrink: 0 }}>
+            {[...Array(5)].map((_, i) => <span key={i} style={{ color: "var(--sand)", fontSize: "12px" }}>★</span>)}
+          </div>
+          <p key={tick % stories.length} className="font-display" style={{
+            fontSize: "clamp(14px, 1.5vw, 18px)", color: "var(--sage-dark)",
+            fontStyle: "italic", lineHeight: 1.5, animation: "slideIn 0.5s ease both",
+            flex: 1, minWidth: 0,
+          }}>
+            &ldquo;{stories[tick % stories.length].text}&rdquo;
+          </p>
+          <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--sage-mid)", whiteSpace: "nowrap", flexShrink: 0 }}>
+            — {stories[tick % stories.length].name}
+          </span>
+        </div>
+
+        <footer style={{ padding: "14px clamp(24px, 4vw, 56px)", borderTop: "1px solid rgba(168,184,168,0.2)", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+          <span className="font-display" style={{ fontSize: "13px", color: "var(--sage-mid)", fontWeight: 600 }}>© 2026 FemmeFlats</span>
           <div style={{ display: "flex", gap: "20px" }}>
             {["Privacy Policy", "Terms", "Contact Us"].map((l) => <a key={l} href="#" className="footer-link">{l}</a>)}
           </div>

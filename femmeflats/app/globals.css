@@ -210,3 +210,44 @@ body {
     min-width: 200px;
   }
 }
+
+/* Screen 2 match cards */
+.match-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(45, 58, 45, 0.10);
+}
+
+/* Deck: front card swipes off to the left, then reappears at the back of the fan.
+   Final frame matches DECK_SLOTS[3] so the card lands exactly on the back slot. */
+@keyframes swipeToBack {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+    opacity: 1;
+    z-index: 60;
+  }
+  38% {
+    transform: translate(-230px, -34px) rotate(-20deg) scale(1);
+    opacity: 0;
+    z-index: 60;
+  }
+  39% {
+    transform: translate(96px, -45px) rotate(12deg) scale(0.88);
+    opacity: 0;
+    z-index: 5;
+  }
+  100% {
+    transform: translate(96px, -45px) rotate(12deg) scale(0.88);
+    opacity: 0.9;
+    z-index: 5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes swipeToBack {
+    0%, 100% {
+      transform: translate(96px, -45px) rotate(12deg) scale(0.88);
+      opacity: 0.9;
+      z-index: 5;
+    }
+  }
+}
