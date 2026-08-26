@@ -1,0 +1,212 @@
+@import "tailwindcss";
+@import "@fontsource/playfair-display/400.css";
+@import "@fontsource/playfair-display/600.css";
+@import "@fontsource/playfair-display/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+
+:root {
+  --sage: #E8EDE6;
+  --sage-deep: #6B7F6B;
+  --sage-mid: #A8B8A8;
+  --sage-dark: #2D3A2D;
+  --ivory: #F8F6F0;
+  --sand: #C4A882;
+  --sand-dark: #A8895E;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--sage);
+  color: var(--sage-dark);
+  height: 100%;
+}
+
+.font-display {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Scroll snap sections */
+.snap-section {
+  scroll-snap-align: start;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Search bar */
+.search-bar {
+  background: var(--ivory);
+  border: 1.5px solid var(--sage-mid);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  gap: 10px;
+  max-width: 420px;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.search-bar:focus-within {
+  border-color: var(--sage-deep);
+}
+.search-bar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--sage-dark);
+  width: 100%;
+}
+.search-bar input::placeholder {
+  color: var(--sage-mid);
+}
+
+/* Profile cards */
+.profile-card {
+  background: var(--ivory);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(168, 184, 168, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 200px;
+}
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(45, 58, 45, 0.12);
+}
+
+.preference-tag {
+  background: var(--sage);
+  color: var(--sage-deep);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4CAF50;
+  display: inline-block;
+}
+
+/* Nav */
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--sage-deep);
+  text-decoration: none;
+  transition: color 0.15s;
+  cursor: pointer;
+}
+.nav-link:hover {
+  color: var(--sage-dark);
+}
+
+/* CTA button */
+.btn-primary {
+  background: var(--sage-deep);
+  color: var(--ivory);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background: var(--sage-dark);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--sage-deep);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 100px;
+  border: 1.5px solid var(--sage-mid);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  text-decoration: none;
+}
+.btn-ghost:hover {
+  border-color: var(--sage-deep);
+}
+
+/* Cards scroll */
+.cards-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.cards-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* Footer */
+.footer-link {
+  font-size: 11px;
+  color: var(--sage-mid);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-link:hover {
+  color: var(--sage-deep);
+}
+
+/* Nav pill indicator */
+.nav-pill {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--sand);
+}
+
+/* Story cards */
+.story-card {
+  background: var(--ivory);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(168, 184, 168, 0.25);
+  min-width: 240px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .profile-card {
+    width: 170px;
+  }
+  .story-card {
+    min-width: 200px;
+  }
+}
