@@ -18,12 +18,6 @@ const profiles: Profile[] = [
 const navLinks = ["Discover", "How it works", "Safety", "Stories"];
 const locationChips = ["Mumbai", "Delhi", "Bengaluru", "Pune"];
 
-const stories = [
-  { name: "Tanvi & Shruti", text: "Found each other in three days. We both wanted a quiet home with no parties — literally the same answer for everything." },
-  { name: "Aisha R.", text: "The preference filters saved me from a bad match. Ended up with a flatmate who actually does the dishes." },
-  { name: "Neha & Pooja", text: "Moved from different cities to Bengaluru. We felt like we already knew each other before we met." },
-];
-
 function FloatingCard({ photo, name, age, location, preferences, delay, style }: {
   photo: string; name: string; age: number; location: string;
   preferences: string[]; delay: number; style?: React.CSSProperties;
@@ -57,6 +51,91 @@ function FloatingCard({ photo, name, age, location, preferences, delay, style }:
   );
 }
 
+const stroke = { fill: "none", stroke: "var(--sage-deep)", strokeWidth: 1.7, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+
+const IconQuiz = (
+  <svg width="27" height="27" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+    <path d="M4 7h10M4 12h12M4 17h6" />
+    <circle cx="19" cy="17" r="2.3" fill="var(--sage-deep)" stroke="none" />
+  </svg>
+);
+const IconVenn = (
+  <svg width="27" height="27" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+    <circle cx="9.2" cy="12" r="5.8" /><circle cx="14.8" cy="12" r="5.8" />
+  </svg>
+);
+const IconDoor = (
+  <svg width="27" height="27" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+    <path d="M4 10.2 12 4l8 6.2V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" />
+    <path d="M10 20v-4.6h4V20" />
+  </svg>
+);
+const IconShield = (
+  <svg width="17" height="17" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+    <path d="M12 3.5 19 6v5.6c0 4.3-2.9 7.5-7 8.9-4.1-1.4-7-4.6-7-8.9V6z" />
+  </svg>
+);
+const IconBadge = (
+  <svg width="17" height="17" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+    <circle cx="12" cy="12" r="8.2" /><path d="M8.6 12.2 11 14.6l4.4-4.6" />
+  </svg>
+);
+const IconChat = (
+  <svg width="17" height="17" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+    <path d="M20 12.5c0 3.6-3.6 6.5-8 6.5a9.6 9.6 0 0 1-2.6-.35L5 20.5l1.1-3.2A6.2 6.2 0 0 1 4 12.5C4 8.9 7.6 6 12 6s8 2.9 8 6.5z" />
+  </svg>
+);
+const IconBlock = (
+  <svg width="17" height="17" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+    <circle cx="12" cy="12" r="8.2" /><path d="M6.3 6.3l11.4 11.4" />
+  </svg>
+);
+
+const FOOTER_LINKS = ["Safety", "Contact us", "Privacy Policy", "Terms"];
+
+const STEPS = [
+  { label: "Answer", line: "Twelve questions", icon: IconQuiz, lift: 0 },
+  { label: "Match",  line: "Ranked by overlap", icon: IconVenn, lift: 26 },
+  { label: "Meet",   line: "You choose", icon: IconDoor, lift: 0 },
+];
+
+const SAFETY = [
+  { icon: IconShield, text: "Women only" },
+  { icon: IconBadge,  text: "Selfie verified" },
+  { icon: IconChat,   text: "No cold DMs" },
+  { icon: IconBlock,  text: "Block in one tap" },
+];
+
+/* Three steps on a dashed arc — the middle one lifted, so the flow reads as a
+   curve rather than a list. */
+function StepFlow() {
+  return (
+    <div style={{ position: "relative", width: "100%", maxWidth: "440px", paddingTop: "30px" }}>
+      <svg viewBox="0 0 440 66" preserveAspectRatio="none" aria-hidden="true"
+        style={{ position: "absolute", top: "26px", left: 0, width: "100%", height: "66px", pointerEvents: "none" }}>
+        <path d="M 64 37 Q 220 -15 376 37" fill="none" stroke="var(--sage-mid)" strokeWidth="1.5" strokeDasharray="4 7" opacity="0.85" />
+      </svg>
+      <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        {STEPS.map((st) => (
+          <div key={st.label} style={{
+            display: "flex", flexDirection: "column", alignItems: "center", gap: "10px",
+            width: "128px", marginTop: `${-st.lift}px`,
+          }}>
+            <div style={{
+              width: "66px", height: "66px", borderRadius: "50%", background: "var(--sage)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>{st.icon}</div>
+            <div style={{ textAlign: "center" }}>
+              <div className="font-display" style={{ fontSize: "18px", fontWeight: 700, color: "var(--sage-dark)" }}>{st.label}</div>
+              <div style={{ fontSize: "11.5px", color: "var(--sage-mid)", marginTop: "3px" }}>{st.line}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function MatchRing({ pct, size = 46 }: { pct: number; size?: number }) {
   const inner = size - 8;
   return (
@@ -82,27 +161,27 @@ function MatchRing({ pct, size = 46 }: { pct: number; size?: number }) {
 function ProfileCardTall({ p }: { p: Profile }) {
   return (
     <div style={{
-      width: "322px", height: "440px", borderRadius: "28px",
+      width: "384px", height: "478px", borderRadius: "32px",
       background: "#fff", border: "1px solid rgba(168,184,168,0.45)",
       boxShadow: "0 20px 48px rgba(45,58,45,0.15)",
       padding: "22px", display: "flex", flexDirection: "column",
       position: "relative", overflow: "hidden",
     }}>
       <div style={{
-        position: "absolute", top: "-84px", left: "50%", transform: "translateX(-50%)",
-        width: "360px", height: "230px", borderRadius: "50%",
+        position: "absolute", top: "-124px", left: "50%", transform: "translateX(-50%)",
+        width: "460px", height: "296px", borderRadius: "50%",
         background: "var(--sage)", opacity: 0.8,
       }} />
 
       <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 3 }}>
-        <MatchRing pct={p.match} size={54} />
+        <MatchRing pct={p.match} size={64} />
       </div>
 
-      <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: "14px", flex: 1 }}>
-        <div style={{ position: "relative", marginTop: "20px" }}>
+      <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: "18px", flex: 1 }}>
+        <div style={{ position: "relative", marginTop: "30px" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={p.photo} alt="" style={{
-            width: "124px", height: "124px", borderRadius: "50%", objectFit: "cover",
+            width: "168px", height: "168px", borderRadius: "50%", objectFit: "cover",
             border: "3.5px solid #fff", boxShadow: "0 6px 20px rgba(45,58,45,0.16)",
           }} />
           {p.verified && (
@@ -119,7 +198,7 @@ function ProfileCardTall({ p }: { p: Profile }) {
         </div>
 
         <div style={{ textAlign: "center" }}>
-          <div className="font-display" style={{ fontSize: "24px", fontWeight: 700, color: "var(--sage-dark)", letterSpacing: "-0.4px" }}>
+          <div className="font-display" style={{ fontSize: "29px", fontWeight: 700, color: "var(--sage-dark)", letterSpacing: "-0.4px" }}>
             {p.name}, {p.age}
           </div>
           <div style={{ fontSize: "13px", color: "var(--sage-mid)", marginTop: "4px" }}>{p.location}</div>
@@ -133,7 +212,7 @@ function ProfileCardTall({ p }: { p: Profile }) {
 
         <div style={{ marginTop: "auto", width: "100%", paddingTop: "16px", borderTop: "1px solid rgba(168,184,168,0.3)", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-            <span style={{ fontSize: "18px", fontWeight: 600, color: "var(--sage-dark)" }}>{p.rent}</span>
+            <span style={{ fontSize: "20px", fontWeight: 600, color: "var(--sage-dark)" }}>{p.rent}</span>
             <span style={{ fontSize: "11px", color: "var(--sage-mid)" }}>{p.lookingFor}</span>
           </div>
           <span style={{ fontSize: "11px", color: "var(--sage-mid)", display: "flex", alignItems: "center", gap: "5px" }}>
@@ -167,7 +246,7 @@ function ProfileDeck() {
   const leaving = step === 0 ? -1 : (step - 1 + n) % n;
 
   return (
-    <div style={{ position: "relative", width: "466px", height: "500px", flexShrink: 0 }}>
+    <div style={{ position: "relative", width: "540px", height: "552px", flexShrink: 0 }}>
       {profiles.map((profile, i) => {
         const slot = DECK_SLOTS[(i - (step % n) + n) % n];
         const isLeaving = i === leaving;
@@ -416,9 +495,9 @@ export default function Home() {
 
         <div style={{
           flex: 1, minHeight: 0, overflow: "hidden",
-          display: "grid", gridTemplateColumns: "1fr 1fr",
-          gap: "clamp(32px, 6vw, 96px)", alignItems: "center",
-          padding: "clamp(20px, 3vh, 40px) clamp(24px, 4vw, 64px) 0",
+          display: "grid", gridTemplateColumns: "auto auto",
+          justifyContent: "center", gap: "clamp(28px, 5vw, 84px)", alignItems: "center",
+          padding: "clamp(28px, 4.5vh, 56px) clamp(24px, 4vw, 64px) clamp(24px, 3.5vh, 46px)",
         }}>
 
           {/* ── LEFT: rotating fanned deck ── */}
@@ -427,55 +506,45 @@ export default function Home() {
           </div>
 
           {/* ── LEFT: how it works + safety, kept short ── */}
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "34px", maxWidth: "400px", justifySelf: "center", height: "100%" }}>
+          <div style={{
+            display: "flex", flexDirection: "column", justifyContent: "center",
+            gap: "clamp(22px, 3.4vh, 40px)", maxWidth: "470px",
+            justifySelf: "center", height: "100%",
+          }}>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.6px", textTransform: "uppercase", color: "var(--sage-mid)" }}>
-                How it works
-              </span>
-              <div style={{ display: "flex", flexDirection: "column", gap: "13px" }}>
-                {[
-                  ["Answer", "Twelve questions. Ninety seconds."],
-                  ["Match", "Ranked by how much you overlap."],
-                  ["Meet", "You choose who is worth a chat."],
-                ].map(([title, line], i) => (
-                  <div key={title} style={{ display: "flex", gap: "13px", alignItems: "baseline" }}>
-                    <span className="font-display" style={{
-                      fontSize: "13px", fontWeight: 700, color: "var(--sage-mid)",
-                      width: "16px", flexShrink: 0,
-                    }}>{i + 1}</span>
-                    <div>
-                      <span className="font-display" style={{ fontSize: "21px", fontWeight: 700, color: "var(--sage-dark)", letterSpacing: "-0.3px" }}>{title}</span>
-                      <span style={{ fontSize: "13px", color: "var(--sage-deep)", marginLeft: "10px" }}>{line}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            {/* ── HOW IT WORKS ── */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.8px", textTransform: "uppercase", color: "var(--sage-mid)" }}>How it works</span>
+              <h2 className="font-display" style={{
+                fontSize: "clamp(25px, 2.4vw, 33px)", fontWeight: 700, color: "var(--sage-dark)",
+                lineHeight: 1.15, letterSpacing: "-0.7px",
+              }}>
+                Three steps.<br />
+                <span style={{ color: "var(--sage-deep)", fontStyle: "italic" }}>Ninety seconds.</span>
+              </h2>
+              <StepFlow />
             </div>
 
-            <div style={{ height: "1px", background: "rgba(168,184,168,0.4)" }} />
+            <div style={{ height: "1px", background: "rgba(168,184,168,0.45)" }} />
 
+            {/* ── SAFETY ── */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.6px", textTransform: "uppercase", color: "var(--sage-mid)" }}>
-                Safety
-              </span>
-              <div style={{ display: "flex", flexDirection: "column", gap: "11px" }}>
-                {[
-                  "Women only.",
-                  "Every profile verified by selfie.",
-                  "Nobody messages you uninvited.",
-                  "Block or report in one tap.",
-                ].map((line) => (
-                  <div key={line} style={{ display: "flex", gap: "11px", alignItems: "center" }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.8px", textTransform: "uppercase", color: "var(--sage-mid)" }}>Safety</span>
+              <h2 className="font-display" style={{
+                fontSize: "clamp(25px, 2.4vw, 33px)", fontWeight: 700, color: "var(--sage-dark)",
+                lineHeight: 1.15, letterSpacing: "-0.7px",
+              }}>
+                Verified, <span style={{ color: "var(--sage-deep)", fontStyle: "italic" }}>or not here.</span>
+              </h2>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "13px 18px" }}>
+                {SAFETY.map((item) => (
+                  <div key={item.text} style={{ display: "flex", alignItems: "center", gap: "11px" }}>
                     <span style={{
-                      width: "17px", height: "17px", borderRadius: "50%", flexShrink: 0,
+                      width: "34px", height: "34px", borderRadius: "50%", flexShrink: 0,
                       background: "var(--sage)", display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      <svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="var(--sage-deep)" strokeWidth={3.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    <span style={{ fontSize: "14px", color: "var(--sage-dark)" }}>{line}</span>
+                    }}>{item.icon}</span>
+                    <span style={{ fontSize: "13.5px", color: "var(--sage-dark)", fontWeight: 500 }}>{item.text}</span>
                   </div>
                 ))}
               </div>
@@ -486,35 +555,26 @@ export default function Home() {
               <Link href="/signup" className="btn-ghost">Create a profile</Link>
             </div>
           </div>
-
         </div>
 
-        {/* ── STORY STRIP: one quote, rotating ── */}
-        <div style={{
-          flexShrink: 0, borderTop: "1px solid rgba(168,184,168,0.28)",
-          margin: "0 clamp(24px, 4vw, 56px)", padding: "18px 0",
-          display: "flex", alignItems: "center", gap: "16px", minHeight: "62px",
+        {/* ── FOOTER ── */}
+        <footer style={{
+          flexShrink: 0, borderTop: "1px solid rgba(168,184,168,0.32)",
+          padding: "15px clamp(24px, 4vw, 64px)",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          gap: "20px", flexWrap: "wrap",
         }}>
-          <div style={{ display: "flex", gap: "2px", flexShrink: 0 }}>
-            {[...Array(5)].map((_, i) => <span key={i} style={{ color: "var(--sand)", fontSize: "12px" }}>★</span>)}
+          <div style={{ display: "flex", alignItems: "baseline", gap: "13px" }}>
+            <span className="font-display" style={{ fontSize: "15px", fontWeight: 700, color: "var(--sage-dark)", letterSpacing: "-0.2px" }}>
+              FemmeFlats
+            </span>
+            <span style={{ fontSize: "11.5px", color: "var(--sage-mid)" }}>© 2026</span>
           </div>
-          <p key={tick % stories.length} className="font-display" style={{
-            fontSize: "clamp(14px, 1.5vw, 18px)", color: "var(--sage-dark)",
-            fontStyle: "italic", lineHeight: 1.5, animation: "slideIn 0.5s ease both",
-            flex: 1, minWidth: 0,
-          }}>
-            &ldquo;{stories[tick % stories.length].text}&rdquo;
-          </p>
-          <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--sage-mid)", whiteSpace: "nowrap", flexShrink: 0 }}>
-            — {stories[tick % stories.length].name}
-          </span>
-        </div>
-
-        <footer style={{ padding: "14px clamp(24px, 4vw, 56px)", borderTop: "1px solid rgba(168,184,168,0.2)", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-          <span className="font-display" style={{ fontSize: "13px", color: "var(--sage-mid)", fontWeight: 600 }}>© 2026 FemmeFlats</span>
-          <div style={{ display: "flex", gap: "20px" }}>
-            {["Privacy Policy", "Terms", "Contact Us"].map((l) => <a key={l} href="#" className="footer-link">{l}</a>)}
-          </div>
+          <nav style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
+            {FOOTER_LINKS.map((l) => (
+              <a key={l} href="#" className="footer-link" style={{ fontSize: "12.5px" }}>{l}</a>
+            ))}
+          </nav>
         </footer>
       </section>
     </main>
