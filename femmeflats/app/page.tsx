@@ -522,18 +522,11 @@ export default function Home() {
               delay={0}
               style={{ left: "4%", top: "14%" }}
             />
-            <FloatingCard
-              photo="https://randomuser.me/api/portraits/women/55.jpg"
-              name="Kavya R." age={25} location="HSR Layout, BLR"
-              preferences={["Veg only", "WFH", "No pets"]}
-              delay={1.5}
-              style={{ right: "4%", bottom: "18%" }}
-            />
             <FloatingFlatCard
               photo="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80&auto=format&fit=crop"
               title="Private room in 2BHK" area="Koramangala, Bengaluru" rent="₹18,000"
-              delay={2.6}
-              style={{ left: "19%", bottom: "4%" }}
+              delay={1.5}
+              style={{ right: "4%", bottom: "18%" }}
             />
 
           </div>
@@ -674,6 +667,28 @@ export default function Home() {
               }}>
                 Places, <span style={{ color: "var(--sage-deep)", fontStyle: "italic" }}>not just people.</span>
               </h2>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "13px", marginTop: "2px" }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {flats.slice(0, 3).map((f, i) => (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      key={f.id}
+                      src={f.photo}
+                      alt=""
+                      style={{
+                        width: "38px", height: "38px", borderRadius: "11px", objectFit: "cover",
+                        border: "2.5px solid var(--ivory)",
+                        marginLeft: i === 0 ? 0 : "-13px",
+                        position: "relative", zIndex: 3 - i,
+                      }}
+                    />
+                  ))}
+                </div>
+                <span style={{ fontSize: "13px", color: "var(--sage-deep)", lineHeight: 1.4 }}>
+                  <strong style={{ fontWeight: 600, color: "var(--sage-dark)" }}>5,000+</strong> flats and PGs listed
+                </span>
+              </div>
             </div>
             <Link href="/browse" style={{ fontSize: "12.5px", color: "var(--sage-deep)", fontWeight: 500, textDecoration: "none", paddingBottom: "4px" }}>
               Browse all flats →
