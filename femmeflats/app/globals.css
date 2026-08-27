@@ -14,6 +14,7 @@
   --ivory: #F8F6F0;
   --sand: #C4A882;
   --sand-dark: #A8895E;
+  --nav-h: 65px;
 }
 
 * {
@@ -44,6 +45,8 @@ body {
   scroll-snap-align: start;
   height: 100dvh;
   overflow: hidden;
+  /* the nav is fixed and overlays the top of every section */
+  padding-top: var(--nav-h);
 }
 
 /* Search bar */
@@ -250,4 +253,24 @@ body {
       z-index: 5;
     }
   }
+}
+
+/* Filter / quick-search chips */
+.chip-btn {
+  background: var(--ivory);
+  border: 1.5px solid rgba(168, 184, 168, 0.6);
+  color: var(--sage-deep);
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.chip-btn:hover {
+  background: var(--sage);
+  border-color: var(--sage-deep);
+  color: var(--sage-dark);
 }

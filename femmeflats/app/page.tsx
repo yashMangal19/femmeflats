@@ -15,7 +15,27 @@ const profiles: Profile[] = [
   { id: 4, match: 95, name: "Meera T.", age: 29, photo: "https://randomuser.me/api/portraits/women/31.jpg", location: "Juhu, Mumbai", rent: "₹18,000 / mo", activeStatus: "Active today", activeDot: "#4CAF50", preferences: ["Non-smoker", "Any diet", "Early riser", "Freelancer", "Dog lover"], lookingFor: "2BHK share", verified: true },
 ];
 
-const navLinks = ["Discover", "How it works", "Safety", "Stories"];
+type Flat = {
+  id: number; photo: string; rent: string; title: string;
+  area: string; tags: string[]; available: string; source: string;
+};
+
+const flats: Flat[] = [
+  { id: 1, photo: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80&auto=format&fit=crop",
+    rent: "₹18,000", title: "Private room in 2BHK", area: "Koramangala, Bengaluru",
+    tags: ["Furnished", "Attached bath"], available: "1 Oct", source: "Owner" },
+  { id: 2, photo: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80&auto=format&fit=crop",
+    rent: "₹24,000", title: "Studio apartment", area: "Juhu, Mumbai",
+    tags: ["Furnished", "Parking"], available: "15 Sep", source: "Owner" },
+  { id: 3, photo: "https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=800&q=80&auto=format&fit=crop",
+    rent: "₹12,500", title: "Shared room in 3BHK", area: "Baner, Pune",
+    tags: ["Semi-furnished", "Balcony"], available: "Now", source: "Broker" },
+  { id: 4, photo: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80&auto=format&fit=crop",
+    rent: "₹9,000", title: "PG bed, women only", area: "Malviya Nagar, Delhi",
+    tags: ["Meals", "Laundry"], available: "Now", source: "PG" },
+];
+
+const navLinks = ["Discover", "How it works", "Flats", "About us"];
 const locationChips = ["Mumbai", "Delhi", "Bengaluru", "Pune"];
 
 function FloatingCard({ photo, name, age, location, preferences, delay, style }: {
@@ -131,6 +151,70 @@ function StepFlow() {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function FloatingFlatCard({ photo, title, area, rent, delay, style }: {
+  photo: string; title: string; area: string; rent: string;
+  delay: number; style?: React.CSSProperties;
+}) {
+  return (
+    <div style={{
+      position: "absolute",
+      background: "rgba(248,246,240,0.96)", backdropFilter: "blur(12px)",
+      borderRadius: "16px", padding: "10px",
+      border: "1px solid rgba(168,184,168,0.35)",
+      boxShadow: "0 8px 32px rgba(45,58,45,0.12)",
+      animation: `floatCard 6s ease-in-out ${delay}s infinite`,
+      width: "198px", zIndex: 10,
+      ...style,
+    }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={photo} alt="" style={{ width: "100%", height: "74px", objectFit: "cover", borderRadius: "10px", display: "block" }} />
+      <div style={{ marginTop: "9px" }}>
+        <div style={{ fontWeight: 600, fontSize: "12px", color: "#2D3A2D" }}>{title}</div>
+        <div style={{ fontSize: "10px", color: "#A8B8A8", marginTop: "1px" }}>{area}</div>
+        <div style={{ fontSize: "12.5px", fontWeight: 600, color: "#6B7F6B", marginTop: "6px" }}>{rent} <span style={{ fontSize: "10px", fontWeight: 400, color: "#A8B8A8" }}>/ mo</span></div>
+      </div>
+    </div>
+  );
+}
+
+/* One flat in the grid on screen 3. */
+function FlatCard({ f }: { f: Flat }) {
+  return (
+    <div className="match-card" style={{
+      background: "#fff", borderRadius: "20px", overflow: "hidden",
+      border: "1px solid rgba(168,184,168,0.4)",
+      display: "flex", flexDirection: "column", height: "100%",
+    }}>
+      <div style={{ position: "relative", flexShrink: 0 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={f.photo} alt="" style={{ width: "100%", height: "158px", objectFit: "cover", display: "block" }} />
+        <span style={{
+          position: "absolute", left: "12px", bottom: "12px",
+          background: "rgba(248,246,240,0.95)", borderRadius: "100px",
+          padding: "5px 11px", fontSize: "13px", fontWeight: 600, color: "var(--sage-dark)",
+        }}>{f.rent} <span style={{ fontSize: "10px", fontWeight: 400, color: "var(--sage-mid)" }}>/ mo</span></span>
+        <span style={{
+          position: "absolute", right: "12px", top: "12px",
+          background: "rgba(45,58,45,0.62)", borderRadius: "100px",
+          padding: "3px 9px", fontSize: "9.5px", fontWeight: 600, color: "#fff", letterSpacing: "0.3px",
+        }}>{f.source}</span>
+      </div>
+      <div style={{ padding: "14px 15px 15px", display: "flex", flexDirection: "column", gap: "9px", flex: 1 }}>
+        <div>
+          <div className="font-display" style={{ fontSize: "16px", fontWeight: 700, color: "var(--sage-dark)", letterSpacing: "-0.2px" }}>{f.title}</div>
+          <div style={{ fontSize: "11px", color: "var(--sage-mid)", marginTop: "3px" }}>{f.area}</div>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+          {f.tags.map((t) => <span key={t} className="preference-tag">{t}</span>)}
+        </div>
+        <div style={{ marginTop: "auto", paddingTop: "10px", borderTop: "1px solid rgba(168,184,168,0.3)", fontSize: "11px", color: "var(--sage-mid)" }}>
+          Available {f.available}
+        </div>
       </div>
     </div>
   );
@@ -299,13 +383,13 @@ export default function Home() {
         .chip-btn:hover { background: var(--sage); border-color: var(--sage-deep); color: var(--sage-dark); }
       `}</style>
 
-      {/* ── SECTION 1: HERO ── */}
-      <section className="snap-section" style={{ background: "var(--sage)", display: "flex", flexDirection: "column" }}>
-        <nav style={{
+      {/* ── FIXED NAV ── */}
+      <nav style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "18px 32px", borderBottom: "1px solid rgba(168,184,168,0.25)",
           background: "rgba(232,237,230,0.88)", backdropFilter: "blur(10px)",
-          position: "sticky", top: 0, zIndex: 50, flexShrink: 0,
+          position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+          height: "var(--nav-h)", boxSizing: "border-box",
         }}>
           <span className="font-display" style={{ fontSize: "20px", fontWeight: 700, color: "var(--sage-dark)", letterSpacing: "-0.3px" }}>FemmeFlats</span>
           <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
@@ -320,6 +404,9 @@ export default function Home() {
             <Link href="/signup" className="btn-primary">Join free</Link>
           </div>
         </nav>
+
+      {/* ── SECTION 1: HERO ── */}
+      <section className="snap-section" style={{ background: "var(--sage)", display: "flex", flexDirection: "column" }}>
 
         <div style={{
           flex: 1, display: "flex", flexDirection: "column",
@@ -442,6 +529,12 @@ export default function Home() {
               delay={1.5}
               style={{ right: "4%", bottom: "18%" }}
             />
+            <FloatingFlatCard
+              photo="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80&auto=format&fit=crop"
+              title="Private room in 2BHK" area="Koramangala, Bengaluru" rent="₹18,000"
+              delay={2.6}
+              style={{ left: "19%", bottom: "4%" }}
+            />
 
           </div>
           </div>
@@ -557,9 +650,52 @@ export default function Home() {
           </div>
         </div>
 
+      </section>
+
+      {/* ── SECTION 3: FLATS ── */}
+      <section id="screen-3" className="snap-section" style={{ background: "var(--ivory)", display: "flex", flexDirection: "column" }}>
+
+        <div style={{
+          flex: 1, minHeight: 0, overflow: "hidden",
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          gap: "clamp(18px, 2.6vh, 30px)",
+          padding: "clamp(28px, 4.5vh, 56px) clamp(24px, 4vw, 64px) clamp(24px, 3.5vh, 46px)",
+          maxWidth: "1300px", width: "100%", margin: "0 auto",
+        }}>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: "24px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.8px", textTransform: "uppercase", color: "var(--sage-mid)" }}>
+                Flats &amp; PGs
+              </span>
+              <h2 className="font-display" style={{
+                fontSize: "clamp(25px, 2.4vw, 33px)", fontWeight: 700, color: "var(--sage-dark)",
+                lineHeight: 1.15, letterSpacing: "-0.7px",
+              }}>
+                Places, <span style={{ color: "var(--sage-deep)", fontStyle: "italic" }}>not just people.</span>
+              </h2>
+            </div>
+            <Link href="/browse" style={{ fontSize: "12.5px", color: "var(--sage-deep)", fontWeight: 500, textDecoration: "none", paddingBottom: "4px" }}>
+              Browse all flats →
+            </Link>
+          </div>
+
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+            <span style={{ fontSize: "11px", color: "var(--sage-mid)", fontWeight: 500, marginRight: "2px" }}>Filter:</span>
+            {["Bengaluru", "Mumbai", "Pune", "Delhi", "Under ₹15k", "Women-only PG"].map((f) => (
+              <button key={f} className="chip-btn">{f}</button>
+            ))}
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "clamp(14px, 1.6vw, 22px)", minHeight: 0 }}>
+            {flats.map((f) => <FlatCard key={f.id} f={f} />)}
+          </div>
+        </div>
+
         {/* ── FOOTER ── */}
         <footer style={{
-          flexShrink: 0, borderTop: "1px solid rgba(168,184,168,0.32)",
+          flexShrink: 0, background: "var(--sage)",
+          borderTop: "1px solid rgba(168,184,168,0.32)",
           padding: "15px clamp(24px, 4vw, 64px)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
           gap: "20px", flexWrap: "wrap",
