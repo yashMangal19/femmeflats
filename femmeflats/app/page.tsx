@@ -526,7 +526,7 @@ export default function Home() {
               photo="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80&auto=format&fit=crop"
               title="Private room in 2BHK" area="Koramangala, Bengaluru" rent="₹18,000"
               delay={1.5}
-              style={{ right: "4%", bottom: "18%" }}
+              style={{ right: "4%", bottom: "7%" }}
             />
 
           </div>
